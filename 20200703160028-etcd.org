@@ -125,7 +125,16 @@
    peer主要用于创造自签名的证书对，一堆加密函数
    client除了上面的还有监听端口套接字之类的配置
 
-   查看是否初始化过，使用token map
+   查看是否初始化过，使用配置的urls和token
+
+   重新搞个config，放到NewServer函数中
+
+   NewServer函数又是个初始化的函数。。。在server/v3/etcdserver里
+
+   先不管这个了，接下来会计算一下本地kv的hash，用来看跟远程是不是一样，会指定版本
+   然后调用Start方法，这个方法比之前的NewServer简单点，但是在一个包里，待会一起看
+
+   最后servePeers，serveClients，serveMetrics，这三个巨复杂，一会再看
  
 * etcd实现
  主要是实现可以服务发现的接口
