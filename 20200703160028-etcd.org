@@ -120,10 +120,15 @@
    - peer处理来自其他etcd的请求，是一个包装成http的grpc服务
    - client处理用户请求，也是同样的包装
    - monitor搞一些监控内容
-    
-   
+
+   peer和client会configure，peer是数组，client是键为url的map
+   peer主要用于创造自签名的证书对，一堆加密函数
+   client除了上面的还有监听端口套接字之类的配置
+
+   查看是否初始化过，使用token map
+ 
 * etcd实现
-  主要是实现可以服务发现的接口
+ 主要是实现可以服务发现的接口
   
 ** 接口
    提供http和protobuf的接口
