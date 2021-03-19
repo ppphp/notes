@@ -80,9 +80,7 @@
 *** cmd
     使用cobra
     
-** 逻辑分发
-   在server/etcdmain/etcd.go:startEtcdOrProxyV2里
-
+** 逻辑分发::server/etcdmain/etcd.go:startEtcdOrProxyV2
    常规操作，初始化config和log
 
    判断运行模式，有server和proxy两种
@@ -97,7 +95,7 @@
     初始化config在server/config.go里
     flag用的是标准库的flag，continueonerror
     
-** 主逻辑
+** 主逻辑::server/embed/etcd.go:StartEtcd
    从startEtcd到server/embed/etcd.go
 
    一开头调用外部Config的validate方法，这个方法干的事情很多
@@ -135,6 +133,27 @@
    然后调用Start方法，这个方法比之前的NewServer简单点，但是在一个包里，待会一起看
 
    最后servePeers，serveClients，serveMetrics，这三个巨复杂，一会再看
+   
+** newserver
+   先新建了一个内存里的store对象，这个对象好复杂，有很多node,NodeExtern什么的东西,，初始化倒挺容易的
+
+   然后检查本地的文件夹，比如datadir,它拼了一些地址，比如$datadir/member/wal,$datadir/member/snap,$snapdir/db
+
+   顺便恢复snap，打开或新建bbolt的后端存储
+
+   初始化peer的transport,也叫roundtripper,就是处理一次性request和response的
+
+   然后看之前的haswal和newcluster，他顺序有点怪，先看haswal，然后没有再看newcluster比较正常
+
+   如果有haswal，从wal文件夹里找最近的snap恢复,会先检查snap，检查很多东西，都是pb里的，现在看不懂,然后找最新的，回复到后端db里，启动节点，同步到集群或者单点模式
+
+   如果不是haswal但是要加入一个集群，会检查集群有效性，通过一个v2的接口，此时那个老集群要打开v2的api *ETCD_ENABLE_V2=true*，验证一下url是否一致，验证一下版本是否兼容，比如现在的etcd版本是3.5-alpha0，那新起的版本可以加入3.0到3.5-alpha0之前的集群，最后赋值一些id，存储对象，存储后端，启动startNode本地节点，然后赋值本地id。发现startNode也挺复杂的。
+
+   如果不是has，而且要新建一个集群。先看看本地在不在集群里，然后看bootstrap条件，主要是peer和advertises是不是一样的。
+   
+   etcd的一个clusterid是组内ip哈希的，所以同样ip的集群，id就不会变。
+   
+    
  
 * etcd实现
  主要是实现可以服务发现的接口
