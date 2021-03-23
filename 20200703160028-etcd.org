@@ -78,25 +78,27 @@
     在/metrics里面
 
 *** cmd
-    使用cobra
+    就两个转发的command使用cobra，tcp级别的转发和grpc级别的转发
     
 ** 逻辑分发::server/etcdmain/etcd.go:startEtcdOrProxyV2
    常规操作，初始化config和log
 
    判断运行模式，有server和proxy两种
 
-   他会从文件名判断一下，这两种模式的文件夹名不同，如果已有文件检查到哪个就运行哪个
+   先从存储的文件名判断一下，这两种模式的文件夹名不同，如果已有文件检查到之前运行的是哪个就这次也运行哪个
 
-   然后看是不是server满了，满了，而且一个fallback的选项打开了之后，就还是proxy，没打开就退出了
+   然后看是不是server满了，如果满了，而且一个fallback的选项打开了之后，就还是proxy，没打开就退出了
 
    主要我们用的还是server，也主要看这个
+
+   进入到下面的StartEtcd，这里面又是一个初始化，但是不会亲自跑逻辑循环，所以会很快退出来，它后续的代码，首先检查下这个的结果，然后卡住进程不让main退出，再打点日志。
    
 *** config
     初始化config在server/config.go里
     flag用的是标准库的flag，continueonerror
     
 ** 主逻辑::server/embed/etcd.go:StartEtcd
-   从startEtcd到server/embed/etcd.go
+   从startEtcd封装了一层收尸，马上到server/embed/etcd.go
 
    一开头调用外部Config的validate方法，这个方法干的事情很多
    - 确认log输出
@@ -127,23 +129,23 @@
 
    重新搞个config，放到NewServer函数中
 
-   NewServer函数又是个初始化的函数。。。在server/v3/etcdserver里
+   NewServer函数是个初始化Etcd对象的函数，在server/v3/etcdserver里，先不管这个了
 
-   先不管这个了，接下来会计算一下本地kv的hash，用来看跟远程是不是一样，会指定版本
+   接下来会计算一下本地kv的hash，用来看跟远程是不是一样，会指定版本
    然后调用Start方法，这个方法比之前的NewServer简单点，但是在一个包里，待会一起看
 
    最后servePeers，serveClients，serveMetrics，这三个巨复杂，一会再看
    
 ** newserver
-   先新建了一个内存里的store对象，这个对象好复杂，有很多node,NodeExtern什么的东西,，初始化倒挺容易的
+   先新建了一个内存里的store对象，这个对象好复杂，有很多node,NodeExtern什么的东西，初始化倒挺容易的，新建了一个根node，node就是那种可以getset的节点，所以根是文件夹，然后下面两个子node，cluster的/0和key的/1，理所当然的这个对象还有watch的信息watchhub和过期的信息ttlheap。
 
    然后检查本地的文件夹，比如datadir,它拼了一些地址，比如$datadir/member/wal,$datadir/member/snap,$snapdir/db
 
    顺便恢复snap，打开或新建bbolt的后端存储
 
-   初始化peer的transport,也叫roundtripper,就是处理一次性request和response的
+   初始化peer的transport,也叫roundtripper,就是处理主动的http一次性request和response的
 
-   然后看之前的haswal和newcluster，他顺序有点怪，先看haswal，然后没有再看newcluster比较正常
+   恢复持久化信息，包括本地信息和集群信息，主要看之前的haswal和newcluster，他代码的顺序有点怪，先看haswal，然后没有再看newcluster比较正常
 
    如果有haswal，从wal文件夹里找最近的snap恢复,会先检查snap，检查很多东西，都是pb里的，现在看不懂,然后找最新的，回复到后端db里，启动节点，同步到集群或者单点模式
 
@@ -152,8 +154,6 @@
    如果不是has，而且要新建一个集群。先看看本地在不在集群里，然后看bootstrap条件，主要是peer和advertises是不是一样的。
    
    etcd的一个clusterid是组内ip哈希的，所以同样ip的集群，id就不会变。
-   
-    
  
 * etcd实现
  主要是实现可以服务发现的接口
