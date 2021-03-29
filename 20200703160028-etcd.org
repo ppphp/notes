@@ -132,7 +132,8 @@
    NewServer函数是个初始化Etcd对象的函数，在server/v3/etcdserver里，先不管这个了
 
    接下来会计算一下本地kv的hash，用来看跟远程是不是一样，会指定版本
-   然后调用Start方法，这个方法比之前的NewServer简单点，但是在一个包里，待会一起看
+
+   然后刚刚初始化的Etcd对象调用Start方法，这个方法比之前的NewServer简单点，待会一起看
 
    最后servePeers，serveClients，serveMetrics，这三个巨复杂，一会再看
    
@@ -154,6 +155,18 @@
    如果不是has，而且要新建一个集群。先看看本地在不在集群里，然后看bootstrap条件，主要是peer和advertises是不是一样的。
    
    etcd的一个clusterid是组内ip哈希的，所以同样ip的集群，id就不会变。
+
+   合成cluster的两个测量sstat和lstat，分别是服务数据和领导数据
+
+   最重要的一步，就是合成基本的Etcd的对象了，是这个函数的核心功能，这里把之前能填的都填进去。
+
+   Etcd这个类非常重要，一半属性比较简单的，比如日志，锁，预备channel什么的，有一些是中等重要的,attributes,cluster,peerrt,reqidgen,consistentindex这种，也有非常重要的，v2store,snapshotter,raftnode,applierv2,backend,lessor,authstore,kv的mvcc,compactor,applierv3base,applierv3internal。
+
+   后面也是在合成Etcd，比如lease的东西，auth的token，mvcc这种。
+
+   最后这个函数也不阻塞，好。
+
+** serverstart
  
 * etcd实现
  主要是实现可以服务发现的接口
