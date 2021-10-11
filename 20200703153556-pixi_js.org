@@ -1,4 +1,7 @@
+:PROPERTIES:
+:ID:       b6c91ce7-97c8-4a8f-be30-3bf75b479ab8
+:END:
 #+title: pixi.js
-#+roam_tags: rendering browser
+#+filetags: :rendering:browser:
 
 https://www.pixijs.com/

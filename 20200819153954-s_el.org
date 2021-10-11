@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       aecae11f-9ced-40d2-99c7-9a150cfe6c9c
+:END:
 #+title: s.el
-#+roam_tags: emacs string
+#+filetags: :emacs:string:
 别的语言标准库的函数，都在s.el里
 
 #+BEGIN_SRC elisp

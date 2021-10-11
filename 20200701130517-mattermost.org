@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       2572b493-9188-4764-9212-838e1ed1a6e1
+:END:
 #+title: mattermost
-#+roam_tags: self-host chat
+#+filetags: :self_host:chat:
 * 安装
   docker-compose
   配置到traefik的网络

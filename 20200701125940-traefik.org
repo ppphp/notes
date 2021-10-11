@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       7caadb3a-2c96-4084-b41e-a80a7d70e2a9
+:END:
 #+title: traefik
-#+roam_tags: self-host gateway
+#+filetags: :self_host:gateway:
 * 安装
   docker-compose安装
 * 版本

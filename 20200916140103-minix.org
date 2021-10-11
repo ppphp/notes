@@ -1,4 +1,7 @@
+:PROPERTIES:
+:ID:       04fca1a3-3b2c-4926-b095-5ef0b0554c86
+:END:
 #+title: minix
-#+roam_tags: os
+#+filetags: :os:
 
 

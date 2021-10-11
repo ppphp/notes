@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       ebcf01a4-327e-4832-b2df-b5bfdd2fb5a0
+:END:
 #+title: prometheus
-#+roam_tags: monitor self-host
+#+filetags: :monitor:self_host:
 [[https://github.com/prometheus/prometheus][repo]] [[https://prometheus.io/][home]]
 * 功能
   采集

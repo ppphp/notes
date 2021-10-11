@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       d98bf208-5ab5-4546-9753-11defa87e0a7
+:END:
+#+title: http
+
+http是一种网络传输协议．
+* usage
+可以简单的用浏览器访问http．脚本语言基本都有http的模块．所有语言都有http的标准库，除了c++．
+* TODO protocol

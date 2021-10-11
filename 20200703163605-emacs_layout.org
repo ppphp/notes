@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       b01d1f5f-b4af-4690-9a44-04469a422be4
+:END:
 #+title: emacs-layout
-#+roam_tags: emacs layout
+#+filetags: :emacs:layout:
 * 基本ui单元
 
   buffer编辑区

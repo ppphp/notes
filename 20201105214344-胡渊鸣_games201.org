@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       9f1a61e1-b770-452a-9bf0-aa4b73ca0f56
+:END:
 #+title: 胡渊鸣_games201
-#+roam_tags: graphics games lesson
+#+filetags: :graphics:games:lesson:
 * taichi
   ti.init
 

@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       a4a53bbc-356e-41a3-9c21-977329a80f20
+:END:
 #+title: etcd
-#+roam_tags: self-host service-configuration
+#+filetags: :self_host:service_configuration:
 * info
 
   redhat -> coreos -> etcd

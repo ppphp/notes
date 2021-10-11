@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       f5c2752a-22e3-4b54-92e4-094cc387eb06
+:END:
 #+title: logrus
-#+roam_tags: go logging
+#+filetags: :go:logging:
 * 基本用法
  #+BEGIN_SRC go
 package main

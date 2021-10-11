@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       4dcd8613-2ac5-41ad-b056-b5303a628525
+:END:
 #+title: flutter
-#+roam_tags: mobile
+#+filetags: :mobile:
 * init
   flutter create project_name
 * dev tool

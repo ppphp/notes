@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       e2bf25a3-f1e8-44ea-aeda-0623bb22ba98
+:END:
 #+title: 刘利刚-games201
-#+roam_tags: graphic games lesson
+#+filetags: :graphic:games:lesson:
 * 函数拟合
   拟合：拉格朗日多项式
 

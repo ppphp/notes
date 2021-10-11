@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       3055d310-87c9-450e-9b7d-41b4aa60799d
+:END:
 #+title: blender
-#+roam_tags: graphic c
+#+filetags: :graphic:c:
 * cmake
 
   一般的option都有，比如python,x11,boost,gmp这种

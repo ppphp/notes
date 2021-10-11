@@ -1,6 +1,9 @@
+:PROPERTIES:
+:ID:       41ac7422-6d16-4014-9a6d-2e66d9685c11
+:END:
 #+title: 闫令琪-games101
-#+roam_tags: games graphic lesson
 #+OPTIONS: tex:t
+#+filetags: :games:graphic:lesson:
 * 第一课 概述
   瞎比比
 * 第二课 线代

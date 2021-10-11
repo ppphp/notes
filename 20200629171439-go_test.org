@@ -1,3 +1,6 @@
+:PROPERTIES:
+:ID:       13bfa510-947e-4911-85e1-ab19ab03f5c9
+:END:
 #+title: go-test
 * basic golang test
 

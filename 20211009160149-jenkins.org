@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       0a1d9181-fcc3-4f8b-991a-ef03e12b0fac
+:END:
+#+title: jenkins
+* usage
+jenkins用docker装就可以了
+美化用simple ui的界面
+* pipeline

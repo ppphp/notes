@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       bee2ae8f-5810-4205-b362-8362ad546ea7
+:END:
 #+title: gitlab
-#+roam_tags: self-host git
+#+filetags: :self_host:git:
 * 安装
   docker compose
 * 配置

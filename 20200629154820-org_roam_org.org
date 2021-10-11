@@ -1,5 +1,8 @@
+:PROPERTIES:
+:ID:       1c754a52-cfc7-4008-aed8-a3260a2ea76e
+:END:
 #+title: org-roam.org
-#+roam_tags: org roam emacs
+#+filetags: :org:roam:emacs:
 
 * setup configuration
 

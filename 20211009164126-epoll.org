@@ -1,0 +1,24 @@
+:PROPERTIES:
+:ID:       dd7d7b47-2b1c-4514-93e3-acde7f084e0d
+:END:
+#+title: epoll
+
+epoll是linux的一个系统调用
+* usage
+主要api有epoll_create，epoll_ctl, epoll_wait三个．
+
+大概的使用顺序是epoll_create创造一个fd，然后epoll_ctl把事件注册到这个fd中去．最后epoll_wait放在程序的主循环中的while条件，等待收取事件，派发事件．
+** example
+#+BEGIN_SRC c++
+  #include <sys/epoll.h>
+  int main() {
+    int fd = epoll_create(0);
+    
+  }
+#+END_SRC
+
+* TODO principal
+** TODO history
+** TODO data structure
+* TODO case study
+
