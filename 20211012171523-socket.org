@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       8b0c8ebd-cef2-48af-a6ee-638eeae23c26
+:END:
+#+title: socket
+#+filetags: :cpp:
+
+socket是一个操作系统对收发信息的抽象．
+* usage
+** linux
