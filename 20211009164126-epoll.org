@@ -2,12 +2,78 @@
 :ID:       dd7d7b47-2b1c-4514-93e3-acde7f084e0d
 :END:
 #+title: epoll
+#+filetags: :linux:
 
-epoll是linux的一个系统调用
+epoll是linux专属的一个系统调用。
 * usage
-主要api有epoll_create，epoll_ctl, epoll_wait三个．
+主要api有epoll_create/epoll_create1，epoll_ctl, epoll_wait三个。头文件是 ~<sys/epoll.h>~ 。
 
-大概的使用顺序是epoll_create创造一个fd，然后epoll_ctl把事件注册到这个fd中去．最后epoll_wait放在程序的主循环中的while条件，等待收取事件，派发事件．
+使用顺序是epoll_create创造一个fd，然后epoll_ctl把事件注册到这个fd中去．最后epoll_wait放在程序的主循环中的while条件，等待收取事件，派发事件。
+
+man可以看到epoll的相关文档。
+
+** epoll_create/epoll_create1
+~int epoll_create(int size)~ 和 ~{int epoll_create1(int flags)}~ 是几乎一样的两个函数，都会在成功时返回fd，失败返回-1并放入errno。
+
+区别是
+- ~epoll_create~ 的size必须大于0,否则因为前向兼容，会报失败。
+- ~epoll_create1~ 的flags是 ~EPOLL_CLOEXEC~ 的时候会有close-on-exec的文件操作
+
+错误有
+- ~EINVAL~ ，指size<0或者flags不对
+- ~EMFILE~ ，指达到了fd上限， ~/proc/sys/fs/epoll/max_user_instances~ 的epoll的fd上限，进程的fd上限，系统的fd上限都会报这个。
+- ~ENOMEM~ ，指内存爆了
+
+  用完记得close掉
+
+** epoll_ctl
+~int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)~ 成功返回0,失败返回-1然后写errno。
+
+~epfd~ 就是上面创造出来的fd。
+
+op有以下几种
+- EPOLL_CTL_ADD，加入fd
+- EPOLL_CTL_MOD，修改监听的fd
+- EPOLL_CTL_DEL，删除fd
+
+fd是一个可以收消息的socket。
+
+然后就只剩下epoll_event了，结构体长这样
+#+BEGIN_SRC c++
+  typedef union epoll_data {
+      void        *ptr;
+      int          fd;
+      uint32_t     u32;
+      uint64_t     u64;
+  } epoll_data_t;
+  
+  struct epoll_event {
+      uint32_t     events;      /* Epoll events */
+      epoll_data_t data;        /* User data variable */
+  };
+#+END_SRC
+data属性是wait的时候返回值设置，不是给ctl用的，只要events就行，events有以下几种
+- *EPOLLIN* socket可读
+- *EPOLLOUT* socket可写
+- *EPOLLRDHUP* socket关闭连接
+- *EPOLLERR* 出错，管道读侧关闭时写侧也会报这个。这个event会一直在，不需要手动注册。
+- EPOLLHUP，socket挂起。这个event会一直等待，不需要手动注册。
+- EPOLLET，改成edge-trigger，默认是level-trigger
+- EPOLLLONESHOT，epoll_wait只会通知一次事件
+- EPOLLWAKEUP，在EPOLLONESHOT和EPOLLET清除之后，并且进程可以CAP_BLOCK_SUSPEND时，保证系统不会在等待或处理这个事件时挂起或休眠。处理的意思是下个epoll_wait事件进来之前。
+- EPOLLEXCLUSIVE，一个fd用多个epoll监听，会返回一个（或更多），不设置的话，每一个都有事件，这个属性只能add。
+
+错误有以下几种
+- *EBADF* fd不是文件描述符
+- *EEXIST* socket的fd已经在这个epoll fd上注册过了
+- *EINVAL* epfd不是epoll，或者和socket的fd一样，或者op用不了。events里EPOLLEXCLUSIVE和不能和他一起的放一起了。EPOLL_CTL_MOD用了EPOLLEXCLUSIVE。EPOLL_CTL_MOD之前这对fd用了EPOLLEXCLUSIVE。fd是一个epoll，用了EPOLLEXCLUSIVE。
+- *ELOOP* EPOLL_CTL_ADD加上了一个epoll的fd，然后自我引用循环大于5。
+- *ENOENT* EPOLL_CTL_MOD或EPOLL_CTL_DEL操作了一个没有add过的fd。
+- *ENOMEM* 内存爆了。
+- *ENOSPC* add触发了/proc/sys/fs/epoll/max_user_watches
+- *EPERM* fd不支持epoll，比如是文件或者文件夹
+
+
 ** example
 #+BEGIN_SRC c++
   #include <sys/epoll.h>
