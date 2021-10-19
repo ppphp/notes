@@ -57,33 +57,56 @@ data属性是wait的时候返回值设置，不是给ctl用的，只要events就
 - *EPOLLOUT* socket可写
 - *EPOLLRDHUP* socket关闭连接
 - *EPOLLERR* 出错，管道读侧关闭时写侧也会报这个。这个event会一直在，不需要手动注册。
-- EPOLLHUP，socket挂起。这个event会一直等待，不需要手动注册。
-- EPOLLET，改成edge-trigger，默认是level-trigger
-- EPOLLLONESHOT，epoll_wait只会通知一次事件
-- EPOLLWAKEUP，在EPOLLONESHOT和EPOLLET清除之后，并且进程可以CAP_BLOCK_SUSPEND时，保证系统不会在等待或处理这个事件时挂起或休眠。处理的意思是下个epoll_wait事件进来之前。
-- EPOLLEXCLUSIVE，一个fd用多个epoll监听，会返回一个（或更多），不设置的话，每一个都有事件，这个属性只能add。
+- *EPOLLHUP* socket挂起。这个event会一直等待，不需要手动注册。
+- *EPOLLET* 改成edge-trigger，默认是level-trigger
+- *EPOLLLONESHOT* epoll_wait只会通知一次事件
+- *EPOLLWAKEUP* 在EPOLLONESHOT和EPOLLET清除之后，并且进程可以CAP_BLOCK_SUSPEND时，保证系统不会在等待或处理这个事件时挂起或休眠。处理的意思是下个epoll_wait事件进来之前。
+- *EPOLLEXCLUSIVE* 一个fd用多个epoll监听，会返回一个（或更多），不设置的话，每一个都有事件，这个属性只能add。
 
 错误有以下几种
 - *EBADF* fd不是文件描述符
 - *EEXIST* socket的fd已经在这个epoll fd上注册过了
 - *EINVAL* epfd不是epoll，或者和socket的fd一样，或者op用不了。events里EPOLLEXCLUSIVE和不能和他一起的放一起了。EPOLL_CTL_MOD用了EPOLLEXCLUSIVE。EPOLL_CTL_MOD之前这对fd用了EPOLLEXCLUSIVE。fd是一个epoll，用了EPOLLEXCLUSIVE。
 - *ELOOP* EPOLL_CTL_ADD加上了一个epoll的fd，然后自我引用循环大于5。
-- *ENOENT* EPOLL_CTL_MOD或EPOLL_CTL_DEL操作了一个没有add过的fd。
+- *ENOENT* 对一个没有add过的fd进行EPOLL_CTL_MOD或EPOLL_CTL_DEL的操作。
 - *ENOMEM* 内存爆了。
 - *ENOSPC* add触发了/proc/sys/fs/epoll/max_user_watches
-- *EPERM* fd不支持epoll，比如是文件或者文件夹
+- *EPERM* socket的fd不支持epoll，比如是文件或者文件夹
+  
+** epoll_wait
+~int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);~ ~int epoll_pwait(int epfd, struct epoll_event *events, int maxevents, int timeout, const sigset_t *sigmask);~ 成功返回0,失败返回-1然后写errno。
 
+~epfd~ 就是epoll的fd
+~events~ 是一个epoll_event的数组，其实是个返回，最大个数是 ~maxevents~ 个。data字段是上一次增改操作，events代表了fd发生的操作。
+~timeout~ 毫秒，-1是永远
+~sigmask~ 一个退出的信号
 
+超过了maxevents就会rr受到的fd避免饥饿
+
+错误有以下几种
+- *EBADF* fd不是文件描述符
+- *EFAULT* events的内存区不能写
+- *EINTR* 超时或是信号退出
+- *EINVAL* epfd不是epoll，或者和socket的fd一样，或者events<=0
+  
+** ET/LT
+edge trigger 只在fd可读可写有变化时返回event，level trigger 只要可读可写就返回。
+
+et在很多event的时候可以搞个ready list，同时搞一个cleanup list
+  
 ** example
 #+BEGIN_SRC c++
   #include <sys/epoll.h>
   int main() {
-    int fd = epoll_create(0);
-    
+    int efd = epoll_create(0);
+    epoll_ctl(efd, EPOLL_ADD, fd, &epoll_event{.events: EPOLLIN});
+    epoll_event evs[32];
+    epoll_wait(efd, evs, 32, -1);
+    deal(evs);
   }
 #+END_SRC
 
-* TODO principal
+* principal
 ** TODO history
 ** TODO data structure
 * TODO case study

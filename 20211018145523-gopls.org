@@ -1,0 +1,16 @@
+:PROPERTIES:
+:ID:       97e614e8-362a-488f-a589-01bd8b7f33a5
+:END:
+#+title: gopls
+#+filetags: :go:
+
+gopls是go官方的lsp实现
+* usage
+在tools/gopls文件下编译
+* structure
+从 ~main.go~ 里进去一堆花里胡哨的，主要是处理命令行，然后调用internal/gopls/cmd/serve.go的Run函数
+lsprpc.NewStreamServer
+jsonrpc2.ListenAndServe
+jsonrpc2.NewHeaderStream
+jsonrpc2.NewConn
+ss.ServeStream

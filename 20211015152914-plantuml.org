@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID:       9194b445-a105-4950-a065-b52e802be73b
+:END:
+#+title: plantuml
+#+filetags: :design-pattern:
+
+plantuml是一个画类图的工具
+
+在线使用：[[http://www.plantuml.com/plantuml][plantuml]]
+* TODO usage
+** class
+~class MyClass~
+** method
+~MyClass: myMethod()~
+** relation
+~MyClass1 -> MyClass2 : myMethod~
+~MyClass1 --> MyClass2~
+** note
+~note left of MyClass~ ~endnote~
+* TODO example
