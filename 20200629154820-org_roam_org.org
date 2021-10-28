@@ -2,30 +2,29 @@
 :ID:       1c754a52-cfc7-4008-aed8-a3260a2ea76e
 :END:
 #+title: org-roam.org
-#+filetags: :org:roam:emacs:
+#+filetags: :note:org:roam:emacs:
+
+org roam 是一个emacs上的roam笔记
+
+[[https://github.com/org-roam/org-roam/][github home]]
 
 * setup configuration
 
-  org-roam-directory 根目录
-
+  org-roam-directory org文件目录
   org-roam-db-location db地址
-  
-  执行函数 org-roam-db-build-cache
   
 * 基本函数
 
-  org-roam-find-file 编辑词条
-  
-  org-roam 打开侧边的roam工具栏，显示引用什么的
+  org-roam-node-find 打开节点
+  org-roam-node-capture 记笔记，退出时
+  org-roam-node-insert 插入节点链接
 
-  org-roam-insert 插入引用
-
-  不定期执行 org-roam-db-build-cache 建立索引
-  
+  org-roam-db-sync 手动同步索引
+  org-roam-db-autosync-mode自动同步
 * 主要优点
 
   反向链接backlink，被引用也会有一个标记，所以插入会有特殊的方法
   
 * 进阶
 
-  标题加入标签，用空格分割 roam_tags: 
+  标题加入标签，用空格分割 filetags: 函数是org-roam-tag-add，还有个org-roam-tag-remove

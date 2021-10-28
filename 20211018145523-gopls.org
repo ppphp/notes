@@ -9,8 +9,14 @@ gopls是go官方的lsp实现
 在tools/gopls文件下编译
 * structure
 从 ~main.go~ 里进去一堆花里胡哨的，主要是处理命令行，然后调用internal/gopls/cmd/serve.go的Run函数
+
+转发的话是下面的函数，不太重要
+lsprpc.NewForwarder
 lsprpc.NewStreamServer
 jsonrpc2.ListenAndServe
-jsonrpc2.NewHeaderStream
-jsonrpc2.NewConn
-ss.ServeStream
+
+然后本地起是以下函数
+lsprpc.NewStreamServer初始化一个有ServeStream方法的interface，是主逻辑，会用到下面的headerstream做io，conn做派发
+jsonrpc2.NewHeaderStream是一个读取http的函数，header只是校验一下content-length啥的，方法有Read和Write往stdin和stdout里读写json，其实就是读写interface{}，但是加了个用来分辨是否是消息的空函数签名isJSONRPC2Message()，就挺无语的
+jsonrpc2.NewConn是派发功能的函数，Call会调用方法
+ss.ServeStream把他们捏一起
